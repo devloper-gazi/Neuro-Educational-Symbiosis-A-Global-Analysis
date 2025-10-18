@@ -3,38 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuro-Educational Symbiosis: A Global Analysis</title>
+    <title>Presentation: Neuro-Educational Symbiosis</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
     <style>
         /* CSS Variables for Theming (Pastel Palette) */
         :root {
-            --bg-color: #F8F9FA;
-            --card-bg-color: #FFFFFF;
-            --text-color: #212529;
+            --bg-color: #F8F9FA; /* Off-white */
+            --slide-bg: #FFFFFF;
+            --text-color: #343A40;
             --heading-color: #004D40; /* Dark Pastel Turquoise */
             --primary-accent: #48D1CC; /* Medium Pastel Turquoise */
-            --secondary-accent: #DAA520; /* Muted Pastel Gold */
+            --secondary-accent: #F0B27A; /* Muted Pastel Gold/Orange */
             --border-color: #E9ECEF;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            --shadow: 0 6px 15px rgba(0, 77, 64, 0.07);
             --icon-bg: #E0F7FA;
             --icon-color: var(--primary-accent);
+            --card-face: #FDFBFB;
         }
 
         body.dark-mode {
             --bg-color: #121212;
-            --card-bg-color: #1E1E1E;
+            --slide-bg: #1E1E1E;
             --text-color: #E0E0E0;
             --heading-color: #80CBC4; /* Light Pastel Turquoise */
             --primary-accent: #48D1CC;
-            --secondary-accent: #FFD54F; /* Light Pastel Gold */
+            --secondary-accent: #FFD54F; /* Brighter Pastel Gold */
             --border-color: #333333;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
             --icon-bg: #263238;
             --icon-color: var(--primary-accent);
+            --card-face: #2A2A2A;
         }
 
         /* General Styles */
@@ -54,172 +56,428 @@
             color: var(--text-color);
             transition: background-color 0.3s ease, color 0.3s ease;
             line-height: 1.7;
+            /* This is key for the slide layout */
+            overflow: hidden; 
+            height: 100vh;
         }
 
         /* Theme Toggle Switch */
         .theme-switch-wrapper {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
+            top: 25px;
+            right: 25px;
+            z-index: 1001;
         }
-
         .theme-switch {
             display: inline-block;
             height: 28px;
             position: relative;
             width: 50px;
         }
-
-        .theme-switch input {
-            display: none;
-        }
-
+        .theme-switch input { display: none; }
         .slider {
             background-color: var(--border-color);
-            bottom: 0;
-            cursor: pointer;
-            left: 0;
             position: absolute;
-            right: 0;
-            top: 0;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
             transition: 0.4s;
         }
-
         .slider:before {
             background-color: #fff;
-            bottom: 4px;
+            position: absolute;
             content: "";
             height: 20px;
-            left: 4px;
-            position: absolute;
-            transition: 0.4s;
             width: 20px;
+            left: 4px;
+            bottom: 4px;
+            transition: 0.4s;
+        }
+        input:checked + .slider { background-color: var(--secondary-accent); }
+        input:checked + .slider:before { transform: translateX(22px); }
+        .slider.round { border-radius: 28px; }
+        .slider.round:before { border-radius: 50%; }
+
+        /* Presentation Container */
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
-        .slider.round {
-            border-radius: 28px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--secondary-accent);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(22px);
-        }
-
-        /* Main Layout */
-        main {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 4rem;
-            padding-bottom: 2rem;
+        .slide {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+            background-color: var(--slide-bg);
             border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        header h1 {
-            font-size: clamp(2.2rem, 5vw, 3rem);
+        .slide-content {
+            max-width: 1100px;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 2rem;
+            /* Custom scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-accent) var(--border-color);
+        }
+        .slide-content::-webkit-scrollbar { width: 8px; }
+        .slide-content::-webkit-scrollbar-track { background: var(--border-color); }
+        .slide-content::-webkit-scrollbar-thumb { background-color: var(--primary-accent); border-radius: 6px; }
+
+
+        /* Slide Navigation */
+        .slide-nav {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: var(--slide-bg);
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+        .slide-nav button {
+            background: transparent;
+            border: none;
+            color: var(--primary-accent);
+            font-size: 1.8rem;
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .slide-nav button:hover {
+            color: var(--heading-color);
+        }
+        .slide-nav button:disabled {
+            color: var(--border-color);
+            cursor: not-allowed;
+        }
+        #slide-counter {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-color);
+            opacity: 0.7;
+            padding: 0 0.5rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* Slide Content Styling */
+        .slide h1, .slide h2, .slide h3 {
             color: var(--heading-color);
             font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 0.5rem;
-        }
-
-        header .subtitle {
-            font-size: clamp(1rem, 3vw, 1.25rem);
-            font-weight: 300;
-            opacity: 0.8;
-        }
-
-        /* Section Styling */
-        .content-section {
-            background-color: var(--card-bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            margin-bottom: 3rem;
-            padding: clamp(1.5rem, 4vw, 3rem);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-
-        .content-section h2 {
-            font-size: clamp(1.8rem, 4vw, 2.2rem);
-            color: var(--heading-color);
-            font-weight: 600;
             margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
+        }
+        .slide h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            text-align: center;
+            color: var(--heading-color);
+            font-weight: 800;
+        }
+        .slide .subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 300;
+            text-align: center;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 1rem auto 0;
+        }
+        .slide h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
             border-bottom: 3px solid var(--primary-accent);
+            padding-bottom: 0.5rem;
             display: flex;
             align-items: center;
         }
-
-        .content-section h2 .icon {
-            font-size: 2rem;
-            margin-right: 0.75rem;
-            display: inline-block;
-            background-color: var(--icon-bg);
-            padding: 0.5rem;
-            border-radius: 50%;
-            color: var(--icon-color);
-            transition: background-color 0.3s ease;
+        .slide h2 .icon {
+            font-size: 2.2rem;
+            margin-right: 1rem;
+            transform: translateY(-4px);
         }
-
-        .content-section h3 {
-            font-size: clamp(1.3rem, 3vw, 1.6rem);
+        .slide h3 {
+            font-size: clamp(1.4rem, 3vw, 1.7rem);
             color: var(--secondary-accent);
             font-weight: 600;
             margin-top: 2rem;
-            margin-bottom: 1rem;
         }
-
-        .content-section p, 
-        .content-section li {
+        .slide p, .slide li {
             font-size: 1.1rem;
-            font-weight: 400;
             margin-bottom: 1.5rem;
-            color: var(--text-color);
             opacity: 0.9;
         }
-
-        .content-section ul {
+        .slide ul {
             list-style-position: inside;
-            padding-left: 1rem;
+            padding-left: 1.5rem;
         }
-
-        .content-section sup {
-            font-size: 0.75rem;
+        .slide ul li { margin-bottom: 0.75rem; }
+        .slide sup {
+            font-size: 0.7rem;
             line-height: 0;
-            position: relative;
-            vertical-align: baseline;
-            top: -0.5em;
             opacity: 0.7;
             padding-left: 2px;
         }
 
-        /* Table Styling */
+        /* Title Slide Specifics */
+        #slide-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        #slide-title .brain-icon {
+            font-size: 5rem;
+            color: var(--primary-accent);
+            animation: pulse 2.5s infinite;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        /* Animation for elements on slide load */
+        .slide .anim {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .slide.active .anim {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Staggered animations */
+        .slide.active .anim-1 { transition-delay: 0.1s; }
+        .slide.active .anim-2 { transition-delay: 0.2s; }
+        .slide.active .anim-3 { transition-delay: 0.3s; }
+        .slide.active .anim-4 { transition-delay: 0.4s; }
+        .slide.active .anim-5 { transition-delay: 0.5s; }
+        .slide.active .anim-6 { transition-delay: 0.6s; }
+
+
+        /* --- Section 3: Interactive Flip Cards --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .flip-card {
+            background-color: transparent;
+            height: 400px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            transition: transform 0.7s;
+            transform-style: preserve-3d;
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        /* Mobile/Touch: toggle class with JS */
+        .flip-card.is-flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 2rem;
+            background: var(--card-face);
+            border: 1px solid var(--border-color);
+        }
+        .flip-card-front {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .flip-card-front .icon {
+            font-size: 4rem;
+            color: var(--primary-accent);
+            margin-bottom: 1.5rem;
+        }
+        .flip-card-front h4 {
+            font-size: 1.5rem;
+            color: var(--heading-color);
+            font-weight: 600;
+        }
+        .flip-card-front .prompt {
+            font-size: 0.9rem;
+            color: var(--secondary-accent);
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+            overflow-y: auto;
+            /* Custom scrollbar for card back */
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-accent) var(--border-color);
+        }
+        .flip-card-back::-webkit-scrollbar { width: 6px; }
+        .flip-card-back::-webkit-scrollbar-track { background: var(--border-color); }
+        .flip-card-back::-webkit-scrollbar-thumb { background-color: var(--primary-accent); border-radius: 6px; }
+        
+        .flip-card-back h4 {
+            font-size: 1.3rem;
+            color: var(--secondary-accent);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .flip-card-back p, .flip-card-back li {
+            font-size: 0.95rem;
+        }
+
+
+        /* --- Section 4: Tabbed Interface --- */
+        .tabs-container {
+            margin-top: 2rem;
+            display: flex;
+            min-height: 500px;
+        }
+        .tab-nav {
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid var(--border-color);
+            padding-right: 1.5rem;
+            flex-shrink: 0;
+        }
+        .tab-button {
+            background: transparent;
+            border: none;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-color);
+            opacity: 0.7;
+            text-align: left;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background: var(--icon-bg);
+            color: var(--heading-color);
+            font-weight: 700;
+            opacity: 1;
+            transform: translateX(5px);
+        }
+        .tab-content-container {
+            padding-left: 2rem;
+            flex-grow: 1;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-content h4 {
+            font-size: 1.3rem;
+            color: var(--secondary-accent);
+            margin-bottom: 1rem;
+        }
+
+        /* --- Section 5: Accordion Cards --- */
+        .accordion-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .accordion-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        .accordion-header {
+            background: var(--card-face);
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 12px;
+            transition: background 0.3s ease;
+        }
+        .accordion-header:hover {
+            background: var(--icon-bg);
+        }
+        .accordion-header h4 {
+            font-size: 1.3rem;
+            color: var(--heading-color);
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        .accordion-toggle {
+            font-size: 1.8rem;
+            color: var(--primary-accent);
+            transition: transform 0.3s ease;
+        }
+        .accordion-card.active .accordion-toggle {
+            transform: rotate(45deg);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 1.5rem;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+        }
+        .accordion-card.active .accordion-content {
+            max-height: 500px; /* Adjust as needed */
+            padding: 1.5rem 1.5rem;
+        }
+        .accordion-content h5 {
+            color: var(--secondary-accent);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Table Wrapper */
         .table-wrapper {
             overflow-x: auto;
             margin: 1.5rem 0;
             border: 1px solid var(--border-color);
             border-radius: 8px;
+            box-shadow: var(--shadow);
         }
-
         table {
             width: 100%;
-            min-width: 600px; /* Ensures table is wide enough to need scrolling on mobile */
+            min-width: 900px; /* Ensure wide table */
             border-collapse: collapse;
         }
-
         th, td {
             padding: 1rem;
             text-align: left;
@@ -227,61 +485,76 @@
             vertical-align: top;
             font-size: 0.95rem;
         }
-
         th {
-            background-color: var(--bg-color);
+            background-color: var(--icon-bg);
             color: var(--heading-color);
             font-weight: 600;
-            transition: background-color 0.3s ease;
         }
-
-        tbody tr {
-            transition: background-color 0.2s ease;
-        }
-
         tbody tr:last-child th,
-        tbody tr:last-child td {
-            border-bottom: 0;
-        }
+        tbody tr:last-child td { border-bottom: 0; }
+        tbody tr:hover { background-color: var(--card-face); }
 
-        tbody tr:hover {
-            background-color: var(--icon-bg);
-        }
-
-        /* Animation */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .fade-in.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
-            main {
-                padding: 2rem 1rem;
+        @media (max-width: 900px) {
+            .slide {
+                padding: 1rem;
+            }
+            .slide-content {
+                padding: 1rem;
+            }
+            .slide-nav {
+                bottom: 15px;
+            }
+            .slide-nav button {
+                font-size: 1.5rem;
+                padding: 0.5rem 1.2rem;
+            }
+            #slide-counter {
+                font-size: 0.9rem;
             }
 
-            header {
-                margin-bottom: 2rem;
+            .tabs-container {
+                flex-direction: column;
             }
-            
-            .content-section {
-                padding: 1.5rem;
+            .tab-nav {
+                flex-direction: row;
+                overflow-x: auto;
+                border-right: none;
+                border-bottom: 2px solid var(--border-color);
+                padding-right: 0;
+                margin-bottom: 1.5rem;
+            }
+            .tab-button {
+                text-align: center;
+                padding: 0.8rem 1rem;
+                flex-shrink: 0;
+            }
+            .tab-button.active {
+                transform: translateX(0) translateY(2px); /* Show active on bottom border */
+                border-bottom: 3px solid var(--primary-accent);
+                border-radius: 0;
+                background: transparent;
+            }
+            .tab-content-container {
+                padding-left: 0;
             }
 
-            .content-section p, 
-            .content-section li {
-                font-size: 1rem;
+            .accordion-grid {
+                grid-template-columns: 1fr;
             }
+        }
 
+        @media (max-width: 600px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .flip-card {
+                height: 350px;
+            }
             .theme-switch-wrapper {
-                top: 10px;
-                right: 10px;
+                top: 15px;
+                right: 15px;
             }
         }
     </style>
@@ -295,514 +568,602 @@
         </label>
     </div>
 
-    <main>
-        <header>
-            <h1>Neuro-Educational Symbiosis</h1>
-            <p class="subtitle">A Global Analysis of Brain-Computer Interface Integration in Next-Generation Learning Technologies</p>
-        </header>
+    <div class="presentation-container" id="presentation-container">
 
-        <section class="content-section fade-in" id="section-1">
-            <h2><span class="icon">🧠</span>Section 1: The Confluence of Mind and Machine in Education</h2>
-            <p>The convergence of neuroscience, computer science, and education is poised to catalyze a paradigm shift in how human potential is cultivated and realized. At the heart of this transformation lies the integration of two powerful technologies: Brain-Computer Interfaces (BCI) and adaptive educational technology (EdTech). This report provides a comprehensive global analysis of this emerging hybrid field, examining its technological underpinnings, pedagogical applications, geopolitical landscape, and the profound ethical questions it raises. The central premise is that by creating a direct feedback loop between a learner's brain and their digital learning environment, it is possible to craft educational experiences that are unprecedentedly personalized, responsive, and inclusive. However, the path toward this future is fraught with significant technical, societal, and ethical challenges that demand rigorous examination and proactive governance.</p>
-            <p>A Brain-Computer Interface is fundamentally a communication system that establishes a direct pathway between cerebral activity and an external computational device, thereby bypassing the brain's conventional output channels of peripheral nerves and muscles.<sup>1</sup> This technology was initially conceived and developed within a biomedical and rehabilitative framework, with the immediate and laudable goal of restoring communication and control for individuals with severe neuromuscular disorders, such as amyotrophic lateral sclerosis (ALS), brainstem stroke, or spinal cord injury, who are otherwise "locked in".<sup>1</sup> By decoding brain signals associated with user intent, BCIs have enabled paralyzed individuals to control computer cursors, operate robotic limbs, and communicate through thought alone.<sup>5</sup> As the technology has matured, particularly with the advent of more accessible non-invasive methods, its scope has widened considerably. Researchers have begun to explore its potential beyond the purely medical domain, venturing into applications for the general population, with education emerging as a particularly promising frontier.<sup>2</sup></p>
-            <p>Concurrently, educational technology has been on its own evolutionary trajectory, moving away from static, one-size-fits-all content delivery toward dynamic, adaptive learning systems. The principle of computer-supported learning environments is that they can be programmed to personalize the educational experience by altering the difficulty, pacing, or presentation of material based on a learner's interaction behavior, such as their response time or error rate.<sup>9</sup> This capacity for adaptation is widely assumed to be a key determinant of efficient and effective learning.<sup>9</sup> However, these behavioral metrics are ultimately indirect proxies for a learner's internal cognitive state. They can indicate that a student is struggling, but not necessarily why they are struggling—be it from cognitive overload, distraction, or emotional frustration.</p>
-            <p>The conceptual leap proposed by a hybrid BCI-EdTech system is to augment or replace these indirect behavioral proxies with direct, real-time physiological data sourced from the brain itself. This allows for a more direct and implicit monitoring of the learner's cognitive and affective states, such as their cognitive load, attention level, and emotional engagement.<sup>9</sup> This creates a powerful closed-loop system where the educational software can adapt not just to what the student does, but to how the student thinks and feels moment by moment.<sup>7</sup> This transition from a restorative medical tool to an augmentative educational one represents a critical conceptual pivot. The initial focus of BCI on restoring lost function is ethically unambiguous and broadly supported. However, when the technology is applied to healthy individuals to monitor or enhance existing cognitive functions, it moves from the clinical domain into the commercial and public spheres. This shift introduces a new set of complex considerations regarding user agency, data privacy, and the potential for misuse, which are central to the analysis of this report.</p>
-            <p>The integration of BCI into EdTech, therefore, offers the potential to revolutionize pedagogy by creating deeply personalized and inclusive learning environments that can cater to the unique neural profile of every student. It promises to provide powerful new assistive tools for learners with disabilities while offering novel methods for cognitive skill enhancement for all. However, the realization of this vision is contingent upon overcoming significant technical hurdles in usability and signal processing, navigating a complex and competitive global research and commercial landscape, and proactively addressing the profound ethical, legal, and social implications (ELSI) that accompany any technology with the capacity to interface directly with the human mind.</p>
-        </section>
-
-        <section class="content-section fade-in" id="section-2">
-            <h2><span class="icon">🔬</span>Section 2: The Neurotechnological Foundation of BCI-Enhanced Learning</h2>
-            <p>The architecture of a BCI system designed for educational applications is built upon a continuous, adaptive pipeline that translates the brain's complex electrical activity into actionable data. This process involves a sequence of distinct but interconnected stages: signal acquisition, signal processing, and command translation, all operating within a feedback loop that allows the system to learn and refine its performance over time.<sup>1</sup> The viability of such a system in a real-world learning environment is critically dependent on the specific technologies and methodologies employed at each stage. The primary technical challenge is not a lack of sophisticated algorithms, but rather the fundamental difficulty of acquiring a clean, reliable neural signal from a non-expert user in a noisy, dynamic setting like a classroom.</p>
-            
-            <h3>The BCI System Pipeline</h3>
-            <p>An educational BCI operates through a four-part cycle. First, <strong>signal acquisition</strong> involves using sensors to detect and record neural activity. Second, <strong>signal processing</strong> takes this raw, noisy data and prepares it for interpretation. This stage is typically subdivided into preprocessing (or signal enhancement) to remove artifacts, feature extraction to identify relevant patterns in the signal, and classification to categorize these patterns based on a machine learning model.<sup>1</sup> Third, <strong>command translation</strong> converts the classified signal into an output, which in an educational context could be an action (like moving a cursor) or, more commonly, an assessment of the user's cognitive state (like their level of mental workload). Finally, <strong>feedback</strong> is provided to the user, either explicitly (e.g., a visual display of their attention level) or implicitly, as the system adapts the learning environment in response to the decoded brain state.<sup>2</sup> This entire process operates continuously, allowing for real-time interaction between the learner and the educational application.<sup>3</sup></p>
-            
-            <h3>Signal Acquisition Modalities</h3>
-            <p>The choice of signal acquisition modality represents a fundamental trade-off between signal quality and invasiveness. While a range of neuroimaging techniques exist, only a few are practical for educational settings.</p>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Modality</th>
-                            <th>Invasiveness</th>
-                            <th>Temporal Resolution</th>
-                            <th>Spatial Resolution</th>
-                            <th>Cost</th>
-                            <th>Portability</th>
-                            <th>Key Pros for Education</th>
-                            <th>Key Cons for Education</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>EEG</strong></td>
-                            <td>Non-invasive</td>
-                            <td>High (milliseconds)</td>
-                            <td>Low (centimeters)</td>
-                            <td>Low</td>
-                            <td>High</td>
-                            <td>Portable, inexpensive, easy to use, ideal for widespread classroom application.<sup>8</sup></td>
-                            <td>Low signal-to-noise ratio, susceptible to artifacts (e.g., muscle movement).<sup>10</sup></td>
-                        </tr>
-                        <tr>
-                            <td><strong>fNIRS</strong></td>
-                            <td>Non-invasive</td>
-                            <td>Low (seconds)</td>
-                            <td>Medium</td>
-                            <td>Medium</td>
-                            <td>High</td>
-                            <td>Portable, less sensitive to motion artifacts than EEG.</td>
-                            <td>Low temporal resolution, measures blood flow (hemodynamics), not direct neural activity.<sup>10</sup></td>
-                        </tr>
-                        <tr>
-                            <td><strong>ECoG</strong></td>
-                            <td>Invasive</td>
-                            <td>High (milliseconds)</td>
-                            <td>High (millimeters)</td>
-                            <td>High</td>
-                            <td>Low</td>
-                            <td>High signal-to-noise ratio, broader frequency band than EEG, less artifact-prone.<sup>10</sup></td>
-                            <td>Requires neurosurgery (craniotomy), significant safety risks, not viable for general use.<sup>10</sup></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Microelectrode Arrays</strong></td>
-                            <td>Invasive</td>
-                            <td>Very High (single neurons)</td>
-                            <td>Very High (microns)</td>
-                            <td>Very High</td>
-                            <td>Low</td>
-                            <td>Can record single-neuron action potentials for highly precise control.<sup>10</sup></td>
-                            <td>Highly invasive, risk of tissue damage, long-term stability issues, unsuitable for education.<sup>10</sup></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <p>As the comparative analysis in the table illustrates, <strong>Electroencephalography (EEG)</strong> emerges as the dominant modality for educational BCI applications. It involves recording voltage fluctuations generated by neurotransmission activity via electrodes placed on the scalp, often integrated into a cap-like device.<sup>8</sup> Despite its significant limitations in signal quality, its non-invasive nature, low cost, and high portability make it the only currently feasible technology for deployment in schools and homes.<sup>8</sup> Other non-invasive methods like functional Near-Infrared Spectroscopy (fNIRS), which measures changes in blood oxygenation, can also be used, sometimes in conjunction with EEG, but its lower temporal resolution makes it less suitable for tracking rapid cognitive fluctuations.<sup>10</sup> Invasive methods such as Electrocorticography (ECoG), where electrodes are placed directly on the brain's surface, and implanted microelectrode arrays offer vastly superior data but are confined to clinical research and therapeutic use for severe medical conditions due to the inherent risks of neurosurgery.<sup>10</sup></p>
-
-            <h3>Decoding Cognitive States from Neural Signals</h3>
-            <p>The central function of a passive educational BCI is to infer a user's internal mental state from their neural signals.<sup>9</sup> This is accomplished by identifying and decoding "neural signatures"—statistically reliable patterns of brain activity known to correlate with specific cognitive processes. Research has identified several key signatures relevant to learning:</p>
-            <ul>
-                <li><strong>Cognitive Load:</strong> This refers to the mental effort being exerted by the working memory. Studies have shown that as the cognitive demand of a task (e.g., solving arithmetic problems) increases, there is a corresponding power increase in the theta frequency band (4-8 Hz) and a power decrease in the alpha frequency band (8-12 Hz) of the EEG signal.<sup>9</sup> By monitoring these frequency bands, a BCI can assess in real-time whether a learning task is appropriately challenging, too easy (risking boredom), or too difficult (risking frustration and cognitive overload), and the system can adapt accordingly.<sup>9</sup></li>
-                <li><strong>Attention and Engagement:</strong> A learner's level of attention is a critical factor in educational success. BCI systems can be trained to recognize the neural patterns associated with focused attention versus mind-wandering or distraction.<sup>2</sup> This capability has been explored extensively as a potential intervention for Attention-Deficit/Hyperactivity Disorder (ADHD), where the BCI provides feedback to help the user learn to regulate their own attentional state.<sup>7</sup></li>
-                <li><strong>Emotion Recognition:</strong> The emotional state of a learner significantly impacts motivation and information retention. BCI systems can analyze neural signals to recognize and regulate emotions, offering another layer of data for creating a supportive and effective learning environment.<sup>2</sup></li>
-            </ul>
-
-            <h3>The Role of Machine Learning and Signal Processing</h3>
-            <p>Raw EEG signals are inherently weak and contaminated by noise from both neural and non-neural sources (artifacts), such as eye blinks, muscle contractions, and electrical interference from the environment.<sup>1</sup> Therefore, extensive signal processing is a prerequisite for any BCI system. The first step, preprocessing, involves applying filters to remove noise and techniques like Independent Component Analysis to isolate and remove artifacts.<sup>1</sup></p>
-            <p>Once the signal is cleaned, machine learning algorithms are employed for feature extraction and classification. These algorithms are trained on labeled datasets—for example, EEG data recorded while a user performs tasks of known high and low cognitive load—to learn the specific patterns that correspond to each state.<sup>9</sup> A variety of algorithms are used, including Support Vector Machines, Deep Neural Networks (like Convolutional Neural Networks for processing spatial patterns or Recurrent Neural Networks for sequential data), and probabilistic models like Hidden Markov Models.<sup>4</sup> These models can then be used to classify new, unseen data in real-time, translating the continuous stream of brain activity into discrete assessments of the user's cognitive state.<sup>4</sup></p>
-            <p>A significant challenge is that neural patterns can vary over time and between individuals. This necessitates that BCI systems are adaptive, capable of being calibrated for each user and ideally able to retrain themselves to account for shifts in signal characteristics without requiring constant, disruptive recalibration sessions.<sup>4</sup> This "plug-and-play" ideal, where a BCI could work reliably out of the box for any user in any environment, remains a distant goal and represents a major hurdle for practical classroom implementation.<sup>6</sup> The entire system's performance is ultimately constrained by the quality of the initial signal, making robust hardware and sophisticated real-time signal enhancement the most critical components for the future of educational BCI.</p>
-        </section>
-
-        <section class="content-section fade-in" id="section-3">
-            <h2><span class="icon">🎓</span>Section 3: A Framework of BCI Applications in Educational Contexts</h2>
-            <p>The integration of Brain-Computer Interfaces with educational technology opens up a spectrum of applications, ranging from near-term, practical tools that are already being tested to more ambitious, long-term visions that could fundamentally reshape the nature of teaching and learning. These applications can be broadly categorized based on their primary function: adapting the learning environment, enhancing cognitive skills, providing accessibility for students with disabilities, and enabling novel forms of interaction and creation. A key distinction runs through these categories: the difference between "passive" BCIs that monitor a user's state in the background to inform system adaptations, and "active" BCIs that require a user's conscious intent to generate a control signal. This distinction carries significant implications for user agency and the ethical landscape of neuro-enhanced education.</p>
-            
-            <h3>3.1. Real-Time Cognitive State Monitoring and Adaptive Learning Environments</h3>
-            <p>The most mature and extensively researched application of BCI in education is the creation of adaptive learning environments that respond to a learner's real-time cognitive state.<sup>14</sup> This is a form of passive BCI, where the system operates as an implicit monitor. The primary cognitive state targeted is cognitive load, or mental workload.<sup>9</sup></p>
-            <p>In such a system, a student engaged in a digital learning task, such as solving math problems, wears a non-invasive EEG headset. The BCI continuously analyzes their brain activity to estimate their current cognitive load.<sup>9</sup> This data is fed directly to the EdTech platform, which uses it to modulate the difficulty of the task. If the BCI detects signs of high cognitive load, indicating that the student is struggling or overwhelmed, the system could automatically offer a hint, break the problem down into smaller steps, or present a simpler, foundational concept. Conversely, if the BCI detects very low cognitive load, suggesting the student is bored or unengaged, the system could increase the difficulty, introduce a more complex variable, or accelerate the pace of the lesson.<sup>9</sup></p>
-            <p>The goal of this closed-loop system is to maintain the learner in their "zone of proximal development"—a state of optimal challenge that is neither frustratingly difficult nor trivially easy, which is considered key for efficient learning.<sup>9</sup> This approach represents a significant advancement over traditional adaptive systems that rely on behavioral data, as it provides a more direct and nuanced window into the learner's internal experience, allowing for more immediate and precise adjustments to the learning environment.<sup>7</sup></p>
-            
-            <h3>3.2. Neurofeedback Systems for Cognitive Skill Enhancement and Attention Training</h3>
-            <p>Neurofeedback applications utilize BCI technology to provide users with explicit, real-time feedback about their own brain activity, enabling them to learn to consciously self-regulate specific cognitive states.<sup>7</sup> This paradigm transforms the BCI from a passive monitor into an active training tool.</p>
-            <p>One promising area is in general skill acquisition. A study involving novice guitar players demonstrated that a BCI system providing real-time feedback on accuracy and focus led to a significant improvement in performance, with an average accuracy increase of 15% compared to a control group.<sup>7</sup> The feedback acts as a guide, helping the learner to understand the mental state associated with optimal performance and to replicate it more consistently.<sup>7</sup></p>
-            <p>This approach has found a particularly compelling application in the context of Attention-Deficit/Hyperactivity Disorder (ADHD). BCI-based interventions, often gamified, can help individuals with ADHD improve their attention and focus.<sup>7</sup> In these systems, a user's ability to control an element in a game might be directly tied to their measured level of attention. Success in the game reinforces the neural patterns associated with sustained focus, effectively training the brain's attentional networks. Research in this area has shown significant efficacy, leading to the development of commercial products. For instance, Singapore's Agency for Science, Technology and Research (A*STAR) developed the core BCI technology for a home-based attention training program for children with ADHD, which was subsequently commercialized by the spin-off company Neeuro.<sup>17</sup> Similarly, researchers at Nanyang Technological University (NTU) have developed innovative systems for ADHD treatment with significant efficacy outcomes.<sup>13</sup></p>
-            
-            <h3>3.3. BCI as a Foundational Assistive Technology for Inclusive Education</h3>
-            <p>Drawing directly from its origins in medical rehabilitation, one of the most powerful and ethically clear applications of BCI in education is as an assistive technology for students with severe physical disabilities.<sup>7</sup> For learners with conditions like cerebral palsy, spinal cord injury, or advanced ALS, who are unable to use a keyboard, mouse, or touchscreen, BCI provides a vital bridge to the digital world, enabling them to participate more fully in modern education.<sup>1</sup></p>
-            <p>These are typically "active" BCI systems, where the user intentionally generates specific brain signals (e.g., by imagining a motor movement) to control an external device. Applications include:</p>
-            <ul>
-                <li><strong>Computer and Device Control:</strong> BCI can be used to control a computer cursor for pointing, clicking, and typing on a virtual keyboard, allowing students to write essays, browse the internet, and use educational software.<sup>5</sup> Early research focused on one-dimensional cursor control, but systems now support two-dimensional point-and-click functionality, enabling interaction with standard computer applications.<sup>5</sup></li>
-                <li><strong>Communication:</strong> For non-verbal students, BCI-powered spellers, such as the P300 matrix speller, provide a method for composing text character by character through thought.<sup>5</sup></li>
-                <li><strong>Interaction with the Physical World:</strong> BCI can be used to control robotic devices, allowing students with physical limitations to conduct science experiments, manipulate objects, or interact with their environment in ways that would otherwise be impossible.<sup>7</sup></li>
-            </ul>
-            <p>By providing a non-muscular channel for communication and control, BCI technology plays a crucial role in closing the knowledge gap and fostering an inclusive learning environment for students with the most profound disabilities.<sup>18</sup></p>
-            
-            <h3>3.4. Advanced and Future Applications</h3>
-            <p>As the underlying technology continues to advance, more sophisticated and speculative applications of BCI in education are emerging on the research horizon.</p>
-            <ul>
-                <li><strong>Brain-to-Text and Brain-to-Speech:</strong> Moving beyond simple cursor control, advanced research at institutions like Stanford University is focused on decoding imagined speech or the neural signals associated with the intention to handwrite, translating these directly into text on a screen.<sup>19</sup> Such a high-performance speech neuroprosthesis could revolutionize communication for non-verbal individuals, enabling fluent expression at speeds approaching natural conversation.</li>
-                <li><strong>Brain-Computer-Music Interfaces (BCMI):</strong> This innovative application allows users to compose and generate musical elements directly from their brain signals.<sup>7</sup> This not only offers a new medium for artistic expression for individuals with motor impairments but also serves as a tool to enhance creativity and engagement in music education for all learners.<sup>7</sup></li>
-                <li><strong>Collaborative BCI Systems:</strong> Research at institutions like the University of Essex is exploring "collaborative BCIs," where neural and physiological data from multiple individuals in a group are aggregated.<sup>22</sup> By assessing the confidence level of each member based on their neural signals, the system can weigh their inputs to arrive at a more accurate collective decision. This has potential applications in team-based learning scenarios and collaborative problem-solving tasks, potentially improving group performance by up to 20-30% over simple majority decisions.<sup>23</sup></li>
-            </ul>
-            <p>While these advanced applications are still largely in the research phase, they point toward a future where the boundary between thought and digital action becomes increasingly seamless, opening up new vistas for communication, creation, and collaboration within educational settings.</p>
-        </section>
-
-        <section class="content-section fade-in" id="section-4">
-            <h2><span class="icon">🌍</span>Section 4: The Global Epicenters of BCI and Educational Neurotechnology</h2>
-            <p>The development of Brain-Computer Interfaces is a global endeavor, characterized by a complex interplay of government funding, academic innovation, and commercial ambition. While research is widespread, a few key regions have emerged as epicenters, each with a distinct strategic approach and area of specialization. The United States leads in high-risk, capital-intensive foundational research; Europe, particularly Switzerland and the United Kingdom, excels in precision engineering and clinical translation; and key Asian hubs like China and Singapore are focused on rapid, state-supported application development and ecosystem building. Understanding this geopolitical and techno-economic landscape is crucial for contextualizing the current state and future trajectory of BCI-EdTech integration.</p>
-            
-            <h3>4.1. United States</h3>
-            <p>The U.S. maintains a dominant position in BCI research, driven by substantial public funding and a vibrant, venture-backed private sector. The strategic focus is heavily weighted toward foundational neuroscience and advanced medical applications, which in turn provide the technological basis for future educational uses.</p>
-            <ul>
-                <li><strong>Government Initiatives:</strong> The primary engines of public funding are the National Institutes of Health (NIH) and the Defense Advanced Research Projects Agency (DARPA). The NIH's Brain Research Through Advancing Innovative Neurotechnologies® (BRAIN) Initiative, launched in 2013, is a large-scale effort to accelerate the development of new neurotechnologies.<sup>24</sup></li>
-                <li><strong>Academic Hubs:</strong> A dense network of world-class universities forms the backbone of BCI innovation in the U.S. (Stanford University, University of Washington, University of California System, Johns Hopkins University, etc.)<sup>19, 31, 32, 29, 30</sup></li>
-                <li><strong>Commercial Landscape:</strong> The U.S. commercial scene is characterized by high-profile, well-funded startups primarily focused on developing invasive, implantable BCI systems for medical applications. (Neuralink, Synchron, Blackrock Neurotech)<sup>43, 46</sup></li>
-            </ul>
-            
-            <h3>4.2. China</h3>
-            <p>China is rapidly emerging as a major force in the BCI field, driven by a concerted, top-down national strategy aimed at achieving technological sovereignty and global leadership. The approach is characterized by the tight integration of government, academia, and industry to accelerate development and commercialization across multiple sectors, including education.</p>
-            <ul>
-                <li><strong>Government Initiatives:</strong> In 2025, the Chinese government unveiled a comprehensive, multi-ministry “Implementation Plan for Promoting Innovation and Development of the BCI Industry”.<sup>52</sup> This ambitious five-year roadmap aims to achieve key technological breakthroughs by 2027 and establish China as a global BCI leader by 2030.<sup>53</sup></li>
-                <li><strong>Academic Hubs:</strong> China's leading technical universities are central to the national BCI strategy. (Tianjin University, Tsinghua University, Zhejiang University)<sup>55, 36</sup></li>
-                <li><strong>Commercial Landscape:</strong> China's commercial BCI sector is growing rapidly. (BrainCo, NeuralGalaxy, Nanochap)<sup>60, 65</sup></li>
-            </ul>
-
-            <h3>4.3. Singapore</h3>
-            <p>Singapore has established itself as a leading research and innovation hub in Asia, leveraging its world-class universities, significant government investment in science and technology, and a strategic focus on high-impact fields like AI and biomedical engineering.</p>
-            <ul>
-                <li><strong>Academic & Research Hubs:</strong> Nanyang Technological University (NTU) is a major global center for BCI research.<sup>13</sup> The National University of Singapore (NUS) and A*STAR also play crucial roles.<sup>70, 17</sup></li>
-                <li><strong>Commercial Landscape:</strong> Singapore's BCI industry is characterized by startups and spin-offs from its academic base. (Neeuro, Neurowyzr)<sup>74, 75</sup></li>
-            </ul>
-
-            <h3>4.4. Israel</h3>
-            <p>Israel's "Start-Up Nation" ethos, characterized by a dynamic interplay between academia, military technology development, and a venture capital-fueled commercial sector, has made it a significant player in neurotechnology.</p>
-            <ul>
-                <li><strong>Government Initiatives:</strong> The Israel Innovation Authority is the central government agency fostering the nation's innovation ecosystem.<sup>76</sup></li>
-                <li><strong>Academic Hubs:</strong> Technion – Israel Institute of Technology and the Weizmann Institute of Science contribute foundational knowledge.<sup>81, 82</sup></li>
-            </ul>
-
-            <h3>4.5. United Kingdom (England)</h3>
-            <p>The UK, and England in particular, has a rich tradition in neuroscience and is home to several world-leading universities and a growing neurotech industry, supported by new government research initiatives.</p>
-            <ul>
-                <li><strong>Government Initiatives:</strong> Funding is channeled through UK Research and Innovation (UKRI) and the new Advanced Research and Invention Agency (ARIA).<sup>91, 92</sup></li>
-                <li><strong>Academic Hubs:</strong> The University of Essex, Imperial College London, Oxford, and Cambridge are key players.<sup>22, 36, 95</sup></li>
-                <li><strong>Commercial Landscape:</strong> The scene is gaining momentum with startups like Motif Neurotech.<sup>92</sup></li>
-            </ul>
-
-            <h3>4.6. Switzerland</h3>
-            <p>Switzerland stands out as a global leader in precision engineering, medtech, and neuroscience, creating a uniquely powerful ecosystem for developing sophisticated and reliable BCI systems.</p>
-            <ul>
-                <li><strong>Academic Hubs:</strong> École Polytechnique Fédérale de Lausanne (EPFL), ETH Zurich (home of the CYBATHLON), and the Wyss Center are major international centers.<sup>100, 104, 107</sup></li>
-                <li><strong>Commercial Landscape:</strong> Switzerland hosts a thriving ecosystem. (MindMaze, IDUN Technologies)<sup>51, 111</sup></li>
-            </ul>
-
-            <h3>4.7. Russia</h3>
-            <p>The state of BCI research in Russia is less transparent. Reports of a major federal program in 2021 were later contradicted.<sup>113</sup> Research appears concentrated in institutions like Lomonosov Moscow State University with a medical or neurophysiological focus.<sup>115</sup></p>
-
-            <h3>4.8. Northern Europe (Germany, Finland, Denmark)</h3>
-            <p>This region contains countries with strong research traditions. Germany's Berlin Brain-Computer Interface (BBCI) project is significant.<sup>119</sup> Denmark's Aalborg University has a dedicated lab,<sup>36</sup> and Finland's University of Helsinki is a key institution.<sup>36</sup></p>
-
-            <h3 style="margin-top: 3rem;">Table 2: Global Landscape of Leading BCI Research Institutions and Key Focus Areas</h3>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Country</th>
-                            <th>Institution</th>
-                            <th>Key Lab/Center</th>
-                            <th>Primary Research Focus</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>USA</td>
-                            <td>Stanford University</td>
-                            <td>Neural Prosthetics Translational Lab (NPTL) / Brain Development & Education Lab</td>
-                            <td>Invasive BCI for speech/text, Neuroprosthetics, Educational Neuroscience</td>
-                        </tr>
-                        <tr>
-                            <td>USA</td>
-                            <td>University of Washington</td>
-                            <td>Center for Neurotechnology</td>
-                            <td>Non-invasive EEG, Machine Learning, Neuroethics</td>
-                        </tr>
-                        <tr>
-                            <td>USA</td>
-                            <td>University of California, Berkeley</td>
-                            <td>Brain-Machine Interface Systems Laboratory</td>
-                            <td>Sensorimotor learning, Neuroprosthetics</td>
-                        </tr>
-                        <tr>
-                            <td>USA</td>
-                            <td>Johns Hopkins University</td>
-                            <td>Neuroengineering & Biomedical Instrumentation Lab</td>
-                            <td>Neuroengineering, Two-way BCI, Neuro-Education</td>
-                        </tr>
-                        <tr>
-                            <td>China</td>
-                            <td>Tianjin University</td>
-                            <td>Academy of Medical Engineering</td>
-                            <td>Non-invasive BCI, "Brain Talker" chip, Affective BCI</td>
-                        </tr>
-                        <tr>
-                            <td>China</td>
-                            <td>Tsinghua University</td>
-                            <td>Institute of Neural Engineering</td>
-                            <td>Motor Imagery BCI, Visual Spellers</td>
-                        </tr>
-                        <tr>
-                            <td>China</td>
-                            <td>Zhejiang University</td>
-                            <td>Qiushi Academy for Advanced Studies</td>
-                            <td>Interdisciplinary BMI, Neuroscience</td>
-                        </tr>
-                        <tr>
-                            <td>Singapore</td>
-                            <td>Nanyang Technological University (NTU)</td>
-                            <td>Centre for Brain-Computing Research (CBCR)</td>
-                            <td>BCI Algorithms, ADHD treatment, Cognitive Training</td>
-                        </tr>
-                        <tr>
-                            <td>Singapore</td>
-                            <td>National University of Singapore (NUS)</td>
-                            <td>BCI Lab (Duke-NUS)</td>
-                            <td>Cognitive interventions for neuropsychiatric disorders</td>
-                        </tr>
-                        <tr>
-                            <td>Israel</td>
-                            <td>Technion – Israel Institute of Technology</td>
-                            <td>Technion Integrated Brain and Behavior Center</td>
-                            <td>Neuro-engineering, Cognitive Science, Skill Acquisition</td>
-                        </tr>
-                        <tr>
-                            <td>Israel</td>
-                            <td>Weizmann Institute of Science</td>
-                            <td>Davidson Institute of Science Education</td>
-                            <td>Foundational Neuroscience, Science Education</td>
-                        </tr>
-                        <tr>
-                            <td>UK</td>
-                            <td>University of Essex</td>
-                            <td>BCI and Neural Engineering (BCI-NE) Lab</td>
-                            <td>Non-invasive BCI, Collaborative BCI, Decision-making</td>
-                        </tr>
-                        <tr>
-                            <td>UK</td>
-                            <td>Imperial College London</td>
-                            <td>Centre for Neurotechnology</td>
-                            <td>BCI for Neuroplasticity, Stroke Rehabilitation</td>
-                        </tr>
-                        <tr>
-                            <td>UK</td>
-                            <td>University of Oxford</td>
-                            <td>Department of Education</td>
-                            <td>Language, Cognition, and Development</td>
-                        </tr>
-                        <tr>
-                            <td>Switzerland</td>
-                            <td>EPFL</td>
-                            <td>Bio/CMOS Interfaces Lab</td>
-                            <td>Biosensors, Bioelectronics, Implantable Devices</td>
-                        </tr>
-                        <tr>
-                            <td>Switzerland</td>
-                            <td>ETH Zurich</td>
-                            <td>CYBATHLON Initiative</td>
-                            <td>Assistive Technology, BCI Competitions</td>
-                        </tr>
-                        <tr>
-                            <td>Switzerland</td>
-                            <td>Wyss Center for Bio and Neuroengineering</td>
-                            <td></td>
-                            <td>Translational Neurotechnology, Implantable BCI</td>
-                        </tr>
-                        <tr>
-                            <td>Germany</td>
-                            <td>Technische Universität Berlin</td>
-                            <td>Berlin Brain-Computer Interface (BBCI)</td>
-                            <td>EEG-driven systems, Machine Learning</td>
-                        </tr>
-                        <tr>
-                            <td>Denmark</td>
-                            <td>Aalborg University</td>
-                            <td>Laboratory for EEG & BCI</td>
-                            <td>Neurorehabilitation, Gamification</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h3 style="margin-top: 3rem;">Table 3: Profile of Key Commercial Entities in the BCI-EdTech Space</h3>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Company</th>
-                            <th>Country</th>
-                            <th>Technology Type</th>
-                            <th>Target Application</th>
-                            <th>Key Products/Initiatives</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Neuralink</td>
-                            <td>USA</td>
-                            <td>Invasive</td>
-                            <td>Medical, Human Enhancement</td>
-                            <td>"The Link" high-bandwidth implant</td>
-                        </tr>
-                        <tr>
-                            <td>Synchron</td>
-                            <td>USA</td>
-                            <td>Invasive (Endovascular)</td>
-                            <td>Medical</td>
-                            <td>"Stentrode" BCI</td>
-                        </tr>
-                        <tr>
-                            <td>Blackrock Neurotech</td>
-                            <td>USA</td>
-                            <td>Invasive</td>
-                            <td>Medical, Research</td>
-                            <td>"Utah Array" microelectrode arrays</td>
-                        </tr>
-                        <tr>
-                            <td>BrainCo</td>
-                            <td>China/USA</td>
-                            <td>Non-invasive (EEG)</td>
-                            <td>Education, Wellness</td>
-                            <td>"Focus EDU" attention-monitoring headband</td>
-                        </tr>
-                        <tr>
-                            <td>Neeuro</td>
-                            <td>Singapore</td>
-                            <td>Non-invasive (EEG)</td>
-                            <td>Digital Therapeutics, Wellness</td>
-                            <td>"SenzeBand" & "Cogo" ADHD attention training</td>
-                        </tr>
-                        <tr>
-                            <td>MindMaze</td>
-                            <td>Switzerland</td>
-                            <td>Non-invasive</td>
-                            <td>Neuro-rehabilitation, Gaming</td>
-                            <td>Digital neuro-therapeutics platform</td>
-                        </tr>
-                        <tr>
-                            <td>IDUN Technologies</td>
-                            <td>Switzerland</td>
-                            <td>Non-invasive (in-ear EEG)</td>
-                            <td>Wellness, Consumer</td>
-                            <td>In-ear EEG earbuds for brain analytics</td>
-                        </tr>
-                        <tr>
-                            <td>Motif Neurotech</td>
-                            <td>UK</td>
-                            <td>Minimally Invasive</td>
-                            <td>Medical (Cognitive/Psychiatric)</td>
-                            <td>Wireless implants for neuromodulation</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <section class="slide active" id="slide-title">
+            <div class="slide-content">
+                <div class="brain-icon anim anim-1">🧠</div>
+                <h1 class="anim anim-2">Neuro-Educational Symbiosis</h1>
+                <p class="subtitle anim anim-3">A Global Analysis of Brain-Computer Interface Integration in Next-Generation Learning Technologies</p>
+                <p class="subtitle anim-4" style="margin-top: 3rem; font-weight: 500; color: var(--secondary-accent);">Click "Next" to begin</p>
             </div>
         </section>
 
-        <section class="content-section fade-in" id="section-5">
-            <h2><span class="icon">⚖️</span>Section 5: Navigating the Labyrinth of Technical, Ethical, and Societal Challenges</h2>
-            <p>The transformative promise of integrating Brain-Computer Interfaces into education is tempered by a formidable array of challenges. These obstacles span the spectrum from practical engineering hurdles that limit current usability to profound ethical, legal, and social implications (ELSI) that question the very nature of learning, privacy, and equity in a neuro-technologically mediated future. Successfully navigating this labyrinth requires a clear-eyed assessment of the technology's limitations and a proactive, multi-stakeholder approach to establishing robust governance frameworks.</p>
-
-            <h3>5.1. Engineering and Usability Hurdles</h3>
-            <ul>
-                <li><strong>Signal Quality and Stability:</strong> The foundational challenge for educational BCI lies in acquiring a clean and stable neural signal. Non-invasive EEG... is notoriously susceptible to a low signal-to-noise ratio and contamination from artifacts.<sup>10</sup></li>
-                <li><strong>The "Plug-and-Play" Problem:</strong> Current BCI systems are far from the seamless, user-friendly devices required for a classroom setting. Most systems require a lengthy and often tedious calibration process... and often need frequent recalibration to maintain accuracy.<sup>6, 12</sup></li>
-                <li><strong>Challenges with Specific Populations:</strong> The intended users... particularly young children and students with disabilities, present unique usability challenges. Children... may have difficulty remaining still and attentive.<sup>128</sup></li>
-            </ul>
-
-            <h3>5.2. The Sanctity of the Mind: Data Privacy, Neuro-Security, and Cognitive Liberty</h3>
-            <ul>
-                <li><strong>Privacy of Neural Data:</strong> Brain signals represent the most intimate and sensitive category of personal data. They can potentially reveal information about an individual's emotional state, cognitive abilities, mental health, and even subconscious thoughts...<sup>12</sup></li>
-                <li><strong>Neuro-Security:</strong> Like any networked device, BCI systems are vulnerable to cybersecurity threats. Malicious actors could potentially engage in "brain tapping" to steal neural data, or... manipulate the device's output...<sup>12</sup></li>
-                <li><strong>Cognitive Liberty:</strong> This emerging concept refers to an individual's fundamental right to mental self-determination, privacy, and freedom of thought. ...Does a student have the right to be bored, to let their mind wander...? Such applications risk creating an environment of neuro-surveillance...<sup>129</sup></li>
-            </ul>
-
-            <h3>5.3. Equity and Access: Preventing a Neuro-Technological Divide</h3>
-            <ul>
-                <li><strong>Socioeconomic Disparities:</strong> High-performance BCI systems... are likely to be expensive. If these technologies offer a genuine advantage... their access could be limited to affluent individuals and well-funded schools.<sup>132</sup></li>
-                <li><strong>The Right to Assistive Technology:</strong> Conversely, for students with severe disabilities, BCI is not an enhancement but a potential necessity for equitable access to education. ...society has a moral obligation to ensure that these foundational assistive technologies are accessible to all...<sup>12</sup></li>
-            </ul>
-
-            <h3>5.4. Case Study in Ethical Peril: The BrainCo Controversy</h3>
-            <p>The real-world deployment of the BrainCo "Focus EDU" headband system in some Chinese schools provides a stark case study of how these technical, ethical, and societal challenges can converge.</p>
-            <ul>
-                <li><strong>The Technology and its Premise:</strong> BrainCo... developed a non-invasive EEG headband marketed to schools as a tool to improve student learning efficiency... [to] monitor students' attention levels in real-time.<sup>60, 62</sup></li>
-                <li><strong>The Controversy:</strong> When images of children wearing the headbands... surfaced in 2019, it sparked international outrage. Critics condemned the technology as a tool for mass surveillance and psychological control...<sup>60</sup></li>
-                <li><strong>Underlying Concerns:</strong> BrainCo was found to have received funding from Chinese state-linked entities, including a sanctioned military contractor... The company's privacy policies... were found to be contradictory...<sup>61</sup></li>
-                <li><strong>Implications:</strong> The BrainCo case serves as a critical cautionary tale. It demonstrates how a technology... can be perceived—and potentially used—as an instrument of social control. It highlights the immense importance of transparency, data privacy, user consent, and independent oversight.</li>
-            </ul>
-
-            <h3 style="margin-top: 3rem;">Table 4: A Framework for Ethical Risk Assessment and Mitigation in Educational BCI</h3>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Ethical Domain</th>
-                            <th>Specific Risk in Educational Context</th>
-                            <th>Proposed Mitigation Strategy</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Privacy</strong></td>
-                            <td>Unauthorized access to or misuse of sensitive student neural data (e.g., attention levels, emotional states, cognitive disabilities).</td>
-                            <td><strong>Technical:</strong> Implement on-device processing and data anonymization. Use robust encryption. <br><strong>Policy:</strong> Classify neural data as sensitive. Mandate clear, opt-in consent. Prohibit sale of data. <br><strong>Pedagogical:</strong> Educate on "neurorights" and data literacy.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Security</strong></td>
-                            <td>Malicious hacking of BCI systems to manipulate student learning, steal data, or cause physical harm.</td>
-                            <td><strong>Technical:</strong> Robust authentication, access controls, and intrusion detection. Regular security audits. <br><strong>Policy:</strong> Establish cybersecurity standards. Create clear liability frameworks. <br><strong>Pedagogical:</strong> Train users on secure practices.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Cognitive Liberty</strong></td>
-                            <td>Coercion of students to maintain "optimal focus"; penalizing mental states like daydreaming or creative exploration.</td>
-                            <td><strong>Technical:</strong> Design systems with user-overridable controls and a "manual off-switch." <br><strong>Policy:</strong> Prohibit use of passive BCI data for grading or discipline. Legislate the right to mental privacy. <br><strong>Pedagogical:</strong> Frame BCI as a tool for self-discovery, not a performance monitor. Emphasize agency.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Equity</strong></td>
-                            <td>Creation of a "neuro-divide" where only affluent students/schools can afford BCI-based learning enhancements.</td>
-                            <td><strong>Technical:</strong> Focus on low-cost, open-source hardware and software platforms. <br><strong>Policy:</strong> Provide public funding/subsidies for assistive BCI technologies. Fund pilot programs in diverse schools. <br><strong>Pedagogical:</strong> Prioritize applications that support inclusive education.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Safety</strong></td>
-                            <td>Physical risks from hardware (e.g., skin irritation) or psychological risks from inaccurate feedback or system malfunction.</td>
-                            <td><strong>Technical:</strong> Adhere to rigorous medical device safety standards. Conduct extensive testing on target populations. <br><strong>Policy:</strong> Require independent safety certifications. Establish protocols for adverse events. <br><strong>Pedagogical:</strong> Ensure proper training for teachers and staff.</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <section class="slide" id="slide-1">
+            <div class="slide-content">
+                <h2 class="anim anim-1"><span class="icon">💡</span>Section 1: The Confluence of Mind and Machine in Education</h2>
+                <p class="anim anim-2">The convergence of neuroscience, computer science, and education is poised to catalyze a paradigm shift in how human potential is cultivated and realized. At the heart of this transformation lies the integration of two powerful technologies: Brain-Computer Interfaces (BCI) and adaptive educational technology (EdTech).</p>
+                <p class="anim anim-3">This report provides a comprehensive global analysis of this emerging hybrid field, examining its technological underpinnings, pedagogical applications, geopolitical landscape, and the profound ethical questions it raises. The central premise is that by creating a direct feedback loop between a learner's brain and their digital learning environment, it is possible to craft educational experiences that are unprecedentedly personalized, responsive, and inclusive. However, the path toward this future is fraught with significant technical, societal, and ethical challenges that demand rigorous examination and proactive governance.</p>
+                <p class="anim anim-4">A Brain-Computer Interface is fundamentally a communication system that establishes a direct pathway between cerebral activity and an external computational device, thereby bypassing the brain's conventional output channels of peripheral nerves and muscles.<sup>1</sup> This technology was initially conceived... to restore communication and control for individuals with severe neuromuscular disorders...<sup>1</sup> As the technology has matured, its scope has widened considerably... with education emerging as a particularly promising frontier.<sup>2</sup></p>
+                <p class="anim anim-5">Concurrently, educational technology has been on its own evolutionary trajectory... toward dynamic, adaptive learning systems.<sup>9</sup> However, these behavioral metrics are ultimately indirect proxies for a learner's internal cognitive state... The conceptual leap proposed by a hybrid BCI-EdTech system is to augment or replace these indirect behavioral proxies with direct, real-time physiological data sourced from the brain itself. This allows for a more direct and implicit monitoring of the learner's cognitive and affective states...<sup>9</sup></p>
+                <p class="anim anim-6">The integration of BCI into EdTech, therefore, offers the potential to revolutionize pedagogy... However, the realization of this vision is contingent upon overcoming significant technical hurdles... navigating a complex... global landscape, and proactively addressing the profound ethical, legal, and social implications (ELSI)...</p>
             </div>
         </section>
-        
-        <section class="content-section fade-in" id="section-6">
-            <h2><span class="icon">💡</span>Section 6: A Blueprint for a Hybrid Neuro-Educational System</h2>
-            <p>The successful integration of Brain-Computer Interfaces into educational technology is not merely a technical inevitability but a matter of deliberate and responsible design. Synthesizing the technological possibilities, global research trends, and profound ethical challenges, it is possible to outline a blueprint for a hybrid neuro-educational system that is effective, inclusive, and ethically robust. This blueprint is not a single product but a conceptual architecture and a set of guiding principles for researchers, educators, and policymakers to navigate the path toward a truly symbiotic future for learning.</p>
 
-            <h3>6.1. Conceptual Architecture of an Ethical BCI-EdTech System</h3>
-            <p>An ethical and effective BCI-EdTech system should be built on principles of modularity, user-centric control, and a tiered approach to application that prioritizes need and consent.</p>
-            <ul>
-                <li><strong>Modular Design:</strong> The system architecture should be modular, separating the BCI input layer from the EdTech output layer.</li>
-                <li><strong>User-Centric Control and Transparency:</strong> The foundational principle must be the preservation of user agency. ...A key feature should be a user-controlled dashboard... The user must have the unequivocal ability to pause data collection, disable adaptive features, or opt-out...<sup>12</sup></li>
-                <li><strong>A Tiered Application Model:</strong>
-                    <ol>
-                        <li><strong>Tier 1: Foundational Assistive Technology:</strong> The primary... focus... should be on active BCIs as assistive tools for students with severe physical disabilities.</li>
-                        <li><strong>Tier 2: Opt-in Cognitive Skill Development:</strong> ...neurofeedback systems for voluntary cognitive skill enhancement. ...participation is entirely voluntary and student-driven.</li>
-                        <li><strong>Tier 3: Highly Regulated Passive Adaptation:</strong> ...use of passive BCIs for monitoring cognitive states... subject to the strictest regulations... data must be firewalled from any use in student assessment, grading, or disciplinary actions.</li>
-                    </ol>
-                </li>
-            </ul>
+        <section class="slide" id="slide-2">
+            <div class="slide-content">
+                <h2 class="anim anim-1"><span class="icon">🔬</span>Section 2: The Neurotechnological Foundation</h2>
+                <p class="anim anim-2">The architecture of a BCI system... is built upon a continuous, adaptive pipeline that translates the brain's complex electrical activity into actionable data. This involves: <strong>signal acquisition, signal processing, and command translation</strong>, all operating within a feedback loop.<sup>1</sup></p>
+                
+                <h3 class="anim anim-3">Signal Acquisition Modalities</h3>
+                <p class="anim anim-4">The choice of modality represents a fundamental trade-off between signal quality and invasiveness. <strong>Electroencephalography (EEG)</strong> emerges as the dominant modality for education... its non-invasive nature, low cost, and high portability make it the only currently feasible technology for deployment in schools and homes.<sup>8</sup></p>
+                
+                <p class="anim anim-5" style="font-weight: 600; color: var(--secondary-accent);">The next slide contains a detailed comparison table.</p>
 
-            <h3>6.2. Recommendations for Stakeholders</h3>
-            <ul>
-                <li><strong>For Researchers and Developers:</strong> Prioritize work on... usability challenges... [and] a "privacy-by-design" approach... development must be interdisciplinary.<sup>11</sup></li>
-                <li><strong>For Educators and Institutions:</strong> Approach this technology with cautious optimism. ...focus on professional development... run small-scale, voluntary pilot programs... prioritize applications that... enhance inclusion.<sup>133</sup></li>
-                <li><strong>For Policymakers and Regulators:</strong> Develop clear legal definitions and protections for "neural data".<sup>129</sup> ...direct public funding toward independent, longitudinal research... Promote open-source platforms.<sup>133</sup></li>
-            </ul>
-
-            <h3>6.3. Concluding Vision: Toward a Symbiotic Future</h3>
-            <p>The convergence of Brain-Computer Interfaces and educational technology stands at a nascent but pivotal stage. The potential... is genuinely transformative. ...Such systems could offer unparalleled support for students with disabilities, provide powerful new tools for cognitive training, and enable a level of personalization in education that was previously the domain of science fiction.</p>
-            <p>However, the technology itself is agnostic to its purpose. Its ultimate impact will be determined not by its technical sophistication, but by the values embedded in its design and the rules governing its use. The path forward is a dual carriageway: one lane for technological innovation, the other for ethical foresight. Without robust safeguards for privacy, agency, and equity, the same technology that promises to unlock human potential could become a tool for unprecedented surveillance and cognitive homogenization.</p>
-            <p>The vision for a neuro-educational symbiosis should not be a system that aims to read minds or enforce a single, "optimal" way of thinking. Rather, it should be a system that <strong>empowers minds</strong>. For a student with paralysis, it is a tool that gives voice to their thoughts. For a student with ADHD, it is a mirror that helps them understand and train their own attention. For every learner, it could be a dynamic partner that senses when they are struggling and offers support, or senses when they are ready for a new challenge and opens the door. The ultimate goal is not to interface with the brain for the sake of the machine, but to use the machine to help each unique brain achieve its fullest potential. The decisions made today by researchers, educators, and policymakers will determine which of these futures we build.</p>
+                <h3 class="anim anim-5">Decoding Cognitive States from Neural Signals</h3>
+                <p class="anim anim-6">The central function of a passive educational BCI is to infer a user's internal mental state... by identifying and decoding "neural signatures":</p>
+                <ul class="anim anim-6">
+                    <li><strong>🧠 Cognitive Load:</strong> The mental effort being exerted... By monitoring frequency bands (theta $4-8$ Hz, alpha $8-12$ Hz), a BCI can assess if a task is too easy or too difficult.<sup>9</sup></li>
+                    <li><strong>🎯 Attention and Engagement:</strong> BCI systems can be trained to recognize the neural patterns associated with focused attention versus mind-wandering.<sup>2</sup> This is explored for ADHD interventions.<sup>7</sup></li>
+                    <li><strong>😊 Emotion Recognition:</strong> The emotional state of a learner significantly impacts motivation and information retention.<sup>2</sup></li>
+                </ul>
+            </div>
         </section>
-        
-    </main>
+
+        <section class="slide" id="slide-2-table">
+            <div class="slide-content">
+                <h2 class="anim anim-1"><span class="icon">📊</span>Section 2: Signal Acquisition Comparison</h2>
+                <div class="table-wrapper anim anim-2">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Modality</th>
+                                <th>Invasiveness</th>
+                                <th>Temporal Resolution</th>
+                                <th>Spatial Resolution</th>
+                                <th>Cost</th>
+                                <th>Portability</th>
+                                <th>Key Pros for Education</th>
+                                <th>Key Cons for Education</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>EEG</strong></td>
+                                <td>Non-invasive</td>
+                                <td>High (milliseconds)</td>
+                                <td>Low (centimeters)</td>
+                                <td>Low</td>
+                                <td>High</td>
+                                <td>Portable, inexpensive, easy to use, ideal for widespread classroom application.<sup>8</sup></td>
+                                <td>Low signal-to-noise ratio, susceptible to artifacts (e.g., muscle movement).<sup>10</sup></td>
+                            </tr>
+                            <tr>
+                                <td><strong>fNIRS</strong></td>
+                                <td>Non-invasive</td>
+                                <td>Low (seconds)</td>
+                                <td>Medium</td>
+                                <td>Medium</td>
+                                <td>High</td>
+                                <td>Portable, less sensitive to motion artifacts than EEG.</td>
+                                <td>Low temporal resolution, measures blood flow (hemodynamics), not direct neural activity.<sup>10</sup></td>
+                            </tr>
+                            <tr>
+                                <td><strong>ECoG</strong></td>
+                                <td>Invasive</td>
+                                <td>High (milliseconds)</td>
+                                <td>High (millimeters)</td>
+                                <td>High</td>
+                                <td>Low</td>
+                                <td>High signal-to-noise ratio, broader frequency band than EEG, less artifact-prone.<sup>10</sup></td>
+                                <td>Requires neurosurgery (craniotomy), significant safety risks, not viable for general use.<sup>10</sup></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Microelectrode Arrays</strong></td>
+                                <td>Invasive</td>
+                                <td>Very High (single neurons)</td>
+                                <td>Very High (microns)</td>
+                                <td>Very High</td>
+                                <td>Low</td>
+                                <td>Can record single-neuron action potentials for highly precise control.<sup>10</sup></td>
+                                <td>Highly invasive, risk of tissue damage, long-term stability issues, unsuitable for education.<sup>10</sup></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide-3">
+            <div class="slide-content">
+                <h2 class="anim anim-1"><span class="icon">🎓</span>Section 3: BCI Applications in Education</h2>
+                <p class="anim anim-2">BCI applications in education range from near-term tools to ambitious long-term visions. (Hover or tap the cards below to learn more!)</p>
+                
+                <div class="card-grid">
+                    <div class="flip-card anim anim-3">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <span class="icon">🔄</span>
+                                <h4>Adaptive Learning</h4>
+                                <span class="prompt">(Flip for details)</span>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4>3.1. Adaptive Learning Environments</h4>
+                                <p>This is a <strong>passive BCI</strong> application. A non-invasive EEG headset monitors a student's <strong>cognitive load</strong> in real-time.<sup>9</sup></p>
+                                <ul>
+                                    <li><strong>If load is high (struggling):</strong> The system can offer a hint, break down the problem, or present a simpler concept.</li>
+                                    <li><strong>If load is low (bored):</strong> The system can increase the difficulty, introduce a new variable, or speed up the lesson.<sup>9</sup></li>
+                                </ul>
+                                <p>The goal is to keep the learner in their "zone of proximal development"—a state of optimal challenge.<sup>9</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card anim anim-4">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <span class="icon">📈</span>
+                                <h4>Cognitive Enhancement</h4>
+                                <span class="prompt">(Flip for details)</span>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4>3.2. Neurofeedback Systems</h4>
+                                <p>This transforms the BCI into an <strong>active training tool</strong>. It provides users with explicit, real-time feedback about their own brain activity, helping them learn to self-regulate.<sup>7</sup></p>
+                                <p>A key application is for <strong>ADHD</strong>. Gamified interventions can help individuals improve attention and focus.<sup>7</sup> Success in the game (e.g., moving an object with focus) reinforces the neural patterns for sustained attention.</p>
+                                <p>This has been commercialized by companies like Singapore's <strong>Neeuro</strong> (an A*STAR spin-off).<sup>17</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card anim anim-5">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <span class="icon">♿</span>
+                                <h4>Assistive Technology</h4>
+                                <span class="prompt">(Flip for details)</span>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4>3.3. Foundational Assistive Technology</h4>
+                                <p>This is one of the most powerful and ethically clear applications, drawn from BCI's medical origins.<sup>7</sup> It provides a vital bridge for students with severe physical disabilities (e.g., cerebral palsy, ALS).<sup>1</sup></p>
+                                <p>These are <strong>active BCIs</strong> where the user intentionally generates signals to:</p>
+                                <ul>
+                                    <li><strong>Control Computers:</strong> Move cursors, type on virtual keyboards.<sup>5</sup></li>
+                                    <li><strong>Communicate:</strong> Use BCI-powered "spellers" (like the P300 speller) to compose text.<sup>5</sup></li>
+                                    <li><strong>Interact:</strong> Control robotic arms for tasks like science experiments.<sup>7</sup></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card anim anim-6">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <span class="icon">🚀</span>
+                                <h4>Future Applications</h4>
+                                <span class="prompt">(Flip for details)</span>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4>3.4. Advanced and Future Applications</h4>
+                                <p>These are still largely in the research phase but show incredible promise:</p>
+                                <ul>
+                                    <li><strong>Brain-to-Text:</strong> Stanford University is decoding imagined speech or handwriting intentions directly into text on a screen.<sup>19</sup></li>
+                                    <li><strong>Brain-Computer-Music Interfaces (BCMI):</strong> Allows users to compose and generate music from their brain signals, offering new creative outlets.<sup>7</sup></li>
+                                    <li><strong>Collaborative BCIs:</strong> The University of Essex is exploring systems that aggregate neural data from a group to improve collective decision-making, potentially by 20-30%.<sup>22, 23</sup></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide-4">
+            <div class="slide-content">
+                <h2 class="anim anim-1"><span class="icon">🌍</span>Section 4: The Global Epicenters of BCI</h2>
+                <p class="anim anim-2">BCI development is a global endeavor with key hubs. Click the tabs to explore each region's unique approach.</p>
+                
+                <div class="tabs-container anim anim-3">
+                    <div class="tab-nav">
+                        <button class="tab-button active" data-tab="usa">🇺🇸 United States</button>
+                        <button class="tab-button" data-tab="china">🇨🇳 China</button>
+                        <button class="tab-button" data-tab="singapore">🇸🇬 Singapore</button>
+                        <button class="tab-button" data-tab="switzerland">🇨🇭 Switzerland</button>
+                        <button class="tab-button" data-tab="uk">🇬🇧 United Kingdom</button>
+                        <button class="tab-button" data-tab="israel">🇮🇱 Israel</button>
+                        <button class="tab-button" data-tab="others">🇪🇺 Other Regions</button>
+                    </div>
+
+                    <div class="tab-content-container">
+                        <div class="tab-content active" id="tab-usa">
+                            <h4>United States 🇺🇸</h4>
+                            <p>The U.S. leads in high-risk, foundational research, driven by massive public funding and a vibrant private sector.</p>
+                            <ul>
+                                <li><strong>Govt. Initiatives:</strong> <strong>NIH BRAIN Initiative</strong><sup>24</sup> and <strong>DARPA</strong><sup>28</sup> provide substantial funding.</li>
+                                <li><strong>Academic Hubs:</strong> <strong>Stanford</strong> (invasive brain-to-text)<sup>19</sup>, <strong>University of Washington</strong> (non-invasive EEG, neuroethics)<sup>32</sup>, <strong>Johns Hopkins</strong> (neuro-education)<sup>30</sup>, UC System, MIT, Harvard.</li>
+                                <li><strong>Commercial Landscape:</strong> Dominated by high-profile, invasive BCI startups.
+                                    <ul>
+                                        <li><strong>Neuralink:</strong> High-bandwidth implant.<sup>43</sup></li>
+                                        <li><strong>Synchron:</strong> Endovascular "Stentrode" (less invasive).<sup>43</sup></li>
+                                        <li><strong>Blackrock Neurotech:</strong> The "Utah Array," a research workhorse.<sup>43</sup></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="tab-china">
+                            <h4>China 🇨🇳</h4>
+                            <p>China is rapidly emerging via a concerted, top-down national strategy focused on technological sovereignty and rapid commercialization.</p>
+                            <ul>
+                                <li><strong>Govt. Initiatives:</strong> A multi-ministry “Implementation Plan” aims for global BCI leadership by 2030, explicitly targeting industrial and consumer applications, including education.<sup>52, 53</sup></li>
+                                <li><strong>Academic Hubs:</strong> <strong>Tianjin University</strong> ("Brain Talker" chip)<sup>55</sup>, <strong>Tsinghua University</strong> (motor imagery)<sup>36</sup>, <strong>Zhejiang University</strong>.<sup>36</sup></li>
+                                <li><strong>Commercial Landscape:</strong> Growing fast with state support.
+                                    <ul>
+                                        <li><strong>BrainCo:</strong> The controversial "Focus EDU" attention-monitoring headband for classrooms.<sup>60, 62</sup></li>
+                                        <li><strong>NeuralGalaxy:</strong> Clinical solutions for brain disorders.<sup>65</sup></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="tab-singapore">
+                            <h4>Singapore 🇸🇬</h4>
+                            <p>Singapore leverages its world-class universities and strategic government investment to be a key R&D hub in Asia.</p>
+                            <ul>
+                                <li><strong>Govt. Initiatives:</strong> BCI is nurtured within broader strategies like the <strong>SG-AI4SCI</strong> (AI for Science)<sup>66</sup> and <strong>SkillsFuture</strong> (lifelong learning).<sup>67</sup></li>
+                                <li><strong>Academic Hubs:</strong> <strong>Nanyang Technological University (NTU)</strong> is a major center (ADHD treatment, BCI algorithms)<sup>13</sup>. <strong>NUS</strong><sup>70</sup> and <strong>A*STAR</strong><sup>17</sup> are also key.</li>
+                                <li><strong>Commercial Landscape:</strong> Known for spin-offs from its strong research base.
+                                    <ul>
+                                        <li><strong>Neeuro:</strong> An A*STAR spin-off that commercialized the "Cogo" attention training program for children with ADHD.<sup>74</sup></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="tab-switzerland">
+                            <h4>Switzerland 🇨🇭</h4>
+                            <p>Stands out with its global leadership in precision engineering, medtech, and neuroscience, creating a powerful ecosystem for reliable BCI systems.</p>
+                            <ul>
+                                <li><strong>Academic Hubs:</strong> <strong>EPFL</strong> (world leader in biosensors)<sup>100</sup>, <strong>ETH Zurich</strong> (home of the CYBATHLON BCI race)<sup>104</sup>, and the <strong>Wyss Center</strong> (translational neurotech)<sup>107</sup>.</li>
+                                <li><strong>Commercial Landscape:</strong> A thriving ecosystem of high-tech startups.
+                                    <ul>
+                                        <li><strong>MindMaze:</strong> Digital neuro-therapeutics using VR and BCI.<sup>51</sup></li>
+                                        <li><strong>IDUN Technologies:</strong> Innovative in-ear EEG earbuds for consumer use.<sup>111</sup></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="tab-uk">
+                            <h4>United Kingdom 🇬🇧</h4>
+                            <p>The UK has a rich tradition in neuroscience and is growing its neurotech industry, supported by new government research initiatives.</p>
+                            <ul>
+                                <li><strong>Govt. Initiatives:</strong> <strong>UKRI</strong><sup>91</sup> and the new DARPA-modeled <strong>ARIA</strong> (Advanced Research and Invention Agency), which funds precision neurotech.<sup>92</sup></li>
+                                <li><strong>Academic Hubs:</strong> <strong>University of Essex</strong> (world-leading non-invasive and collaborative BCI lab)<sup>22</sup>, <strong>Imperial College London</strong><sup>36</sup>, <strong>Oxford</strong><sup>95</sup>, and <strong>Cambridge</strong>.<sup>36</sup></li>
+                                <li><strong>Commercial Landscape:</strong> Gaining momentum.
+                                    <ul>
+                                        <li><strong>Motif Neurotech:</strong> An ARIA-backed startup developing minimally invasive wireless implants for mood/attention.<sup>92</sup></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="tab-israel">
+                            <h4>Israel 🇮🇱</h4>
+                            <p>Israel's "Start-Up Nation" ethos, mixing academia, military tech, and VC funding, makes it a significant player in neurotechnology.</p>
+                            <ul>
+                                <li><strong>Govt. Initiatives:</strong> The <strong>Israel Innovation Authority</strong> fosters the high-tech ecosystem.<sup>76</sup></li>
+                                <li><strong>Academic Hubs:</strong> <strong>Technion</strong> (neuro-engineering, skill acquisition)<sup>7, 81</sup>, <strong>Weizmann Institute of Science</strong> (foundational neuroscience, science education).<sup>82</sup></li>
+                                <li><strong>Commercial Landscape:</strong> Robust startup scene, though less focused on BCI-EdTech specifically. <strong>NBT New Biotechnology Ltd.</strong> works on BCI for stroke rehab.<sup>89</sup></li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="tab-others">
+                            <h4>Other Key Regions 🇪🇺🇷🇺</h4>
+                            <ul>
+                                <li><strong>Germany 🇩🇪:</strong> Strong research tradition. The <strong>Berlin Brain-Computer Interface (BBCI)</strong> project is a major initiative.<sup>119</sup></li>
+                                <li><strong>Denmark 🇩🇰:</strong> <strong>Aalborg University</strong> hosts a dedicated Laboratory for EEG & BCI focusing on neurorehabilitation and gamification.<sup>36</sup></li>
+                                <li><strong>Russia 🇷🇺:</strong> The state of research is less transparent. A major federal program was reported in 2021 but later denied.<sup>113</sup> Research seems focused on medical applications at institutions like <strong>Lomonosov Moscow State University</strong>.<sup>115</sup></li>
+                                <li><strong>Finland 🇫🇮:</strong> Strong public research system, with key work at the <strong>University of Helsinki</strong>.<sup>36</sup></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide-4-tables">
+            <div class="slide-content">
+                <h2 class="anim anim-1"><span class="icon">🏢</span>Section 4: Global Landscape (Institutions)</h2>
+                <h3 class="anim anim-2">Table 2: Leading BCI Research Institutions and Key Focus Areas</h3>
+                <div class="table-wrapper anim anim-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Country</th>
+                                <th>Institution</th>
+                                <th>Key Lab/Center</th>
+                                <th>Primary Research Focus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>USA</td>
+                                <td>Stanford University</td>
+                                <td>NPTL / Brain Development & Education Lab</td>
+                                <td>Invasive BCI for speech/text, Educational Neuroscience</td>
+                            </tr>
+                            <tr>
+                                <td>USA</td>
+                                <td>University of Washington</td>
+                                <td>Center for Neurotechnology</td>
+                                <td>Non-invasive EEG, Machine Learning, Neuroethics</td>
+                            </tr>
+                            <tr>
+                                <td>China</td>
+                                <td>Tianjin University</td>
+                                <td>Academy of Medical Engineering</td>
+                                <td>Non-invasive BCI, "Brain Talker" chip, Affective BCI</td>
+                            </tr>
+                            <tr>
+                                <td>Singapore</td>
+                                <td>Nanyang Technological University (NTU)</td>
+                                <td>Centre for Brain-Computing Research (CBCR)</td>
+                                <td>BCI Algorithms, ADHD treatment, Cognitive Training</td>
+                            </tr>
+                            <tr>
+                                <td>Israel</td>
+                                <td>Technion – Israel Institute of Technology</td>
+                                <td>Technion Integrated Brain and Behavior Center</td>
+                                <td>Neuro-engineering, Cognitive Science, Skill Acquisition</td>
+                            </tr>
+                            <tr>
+                                <td>UK</td>
+                                <td>University of Essex</td>
+                                <td>BCI and Neural Engineering (BCI-NE) Lab</td>
+                                <td>Non-invasive BCI, Collaborative BCI, Decision-making</td>
+                            </tr>
+                            <tr>
+                                <td>Switzerland</td>
+                                <td>EPFL</td>
+                                <td>Bio/CMOS Interfaces Lab</td>
+                                <td>Biosensors, Bioelectronics, Implantable Devices</td>
+                            </tr>
+                            <tr>
+                                <td>Switzerland</td>
+                                <td>ETH Zurich</td>
+                                <td>CYBATHLON Initiative</td>
+                                <td>Assistive Technology, BCI Competitions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide-4-tables-2">
+            <div class="slide-content">
+                <h2 class="anim anim-1"><span class="icon">💼</span>Section 4: Global Landscape (Commercial)</h2>
+                <h3 class="anim anim-2">Table 3: Profile of Key Commercial Entities in the BCI-EdTech Space</h3>
+                <div class="table-wrapper anim anim-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Country</th>
+                                <th>Technology Type</th>
+                                <th>Target Application</th>
+                                <th>Key Products/Initiatives</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Neuralink</td>
+                                <td>USA</td>
+                                <td>Invasive</td>
+                                <td>Medical, Human Enhancement</td>
+                                <td>"The Link" high-bandwidth implant</td>
+                            </tr>
+                            <tr>
+                                <td>Synchron</td>
+                                <td>USA</td>
+                                <td>Invasive (Endovascular)</td>
+                                <td>Medical</td>
+                                <td>"Stentrode" BCI</td>
+                            </tr>
+                            <tr>
+                                <td>BrainCo</td>
+                                <td>China/USA</td>
+                                <td>Non-invasive (EEG)</td>
+                                <td>Education, Wellness</td>
+                                <td>"Focus EDU" attention-monitoring headband</td>
+                            </tr>
+                            <tr>
+                                <td>Neeuro</td>
+                                <td>Singapore</td>
+                                <td>Non-invasive (EEG)</td>
+                                <td>Digital Therapeutics, Wellness</td>
+                                <td>"SenzeBand" & "Cogo" ADHD attention training</td>
+                            </tr>
+                            <tr>
+                                <td>MindMaze</td>
+                                <td>Switzerland</td>
+                                <td>Non-invasive</td>
+                                <td>Neuro-rehabilitation, Gaming</td>
+                                <td>Digital neuro-therapeutics platform</td>
+                            </tr>
+                            <tr>
+                                <td>IDUN Technologies</td>
+                                <td>Switzerland</td>
+                                <td>Non-invasive (in-ear EEG)</td>
+                                <td>Wellness, Consumer</td>
+                                <td>In-ear EEG earbuds for brain analytics</td>
+                            </tr>
+                            <tr>
+                                TAMBAHAN_CODE_BARIS
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide-5">
+            <div class="slide-content">
+                <h2 class="anim anim-1"><span class="icon">⚖️</span>Section 5: The Labyrinth of Challenges</h2>
+                <p class="anim anim-2">The promise of BCI-EdTech is tempered by formidable challenges. Click each card to explore the risks and potential mitigations.</p>
+                
+                <div class="accordion-grid">
+                    <div class="accordion-card anim anim-3">
+                        <div class="accordion-header">
+                            <h4>🛠️ Engineering & Usability</h4>
+                            <span class="accordion-toggle">+</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>Before BCI can enter any classroom, it must be easy to use and reliable.</p>
+                            <ul>
+                                <li><strong>Signal Quality:</strong> Non-invasive EEG (the only viable option) has a low signal-to-noise ratio, contaminated by eye blinks, muscle movements, etc.<sup>10</sup></li>
+                                <li><strong>The "Plug-and-Play" Problem:</strong> Most systems require a long, tedious calibration process for each user and frequent recalibration. This is disruptive in a classroom.<sup>6, 12</sup></li>
+                                <li><strong>Specific Populations:</strong> Children, especially those with disabilities, may have difficulty remaining still or understanding instructions for calibration.<sup>128</sup></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="accordion-card anim anim-4">
+                        <div class="accordion-header">
+                            <h4>🔒 Privacy & Neuro-Security</h4>
+                            <span class="accordion-toggle">+</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>As BCI decodes cognitive and emotional states, it raises unprecedented ethical questions.</p>
+                            <ul>
+                                <li><strong>Privacy of Neural Data:</strong> Brain signals are the most sensitive personal data. They can reveal emotional states, mental health, and even subconscious thoughts, often without the user's awareness.<sup>12</sup></li>
+                                <li><strong>Neuro-Security:</strong> A hacked BCI is uniquely dangerous. Malicious actors could engage in "brain tapping" to steal data or even manipulate the feedback to influence a user's behavior or perception.<sup>12</sup></li>
+                                <li><strong>Cognitive Liberty:</strong> The right to mental self-determination. Does a student have the right to be bored or daydream without it being recorded and penalized? This risks creating "neuro-surveillance."<sup>129</sup></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="accordion-card anim anim-5">
+                        <div class="accordion-header">
+                            <h4>⚖️ Equity & Access</h4>
+                            <span class="accordion-toggle">+</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>Like many advanced technologies, BCI risks widening existing social and economic inequalities.</p>
+                            <ul>
+                                <li><strong>Socioeconomic Disparities:</strong> High-performance BCIs will be expensive. This could create a "neuro-technological divide," where affluent students get a cognitive enhancement that others cannot, widening the achievement gap.<sup>131, 132</sup></li>
+                                <li><strong>Right to Assistive Tech:</strong> For students with severe disabilities, BCI is not an "enhancement" but a "necessity" for equitable access to education. Society may have a moral obligation to ensure this is accessible to all who need it, regardless of cost.<sup>12</sup></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="accordion-card anim anim-6">
+                        <div class="accordion-header">
+                            <h4>🇨🇳 Case Study: The BrainCo Peril</h4>
+                            <span class="accordion-toggle">+</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>The <strong>BrainCo "Focus EDU"</strong> headband provides a stark, real-world cautionary tale.</p>
+                            <ul>
+                                <li><strong>The Premise:</strong> Marketed to Chinese schools as a tool to improve learning by monitoring student attention levels in real-time on a teacher's monitor.<sup>60, 62</sup></li>
+                                <li><strong>The Controversy:</strong> It sparked international outrage, condemned as a tool for <strong>mass surveillance and psychological control</strong> in the classroom.<sup>60</sup></li>
+                                <li><strong>The Implications:</strong> Investigations revealed deep ties to Chinese state-linked entities and contradictory privacy policies.<sup>61</sup> It demonstrates how a "pedagogical" tool can be co-opted for social control, highlighting the urgent need for transparency, consent, and robust oversight.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide-5-table">
+            <div class="slide-content">
+                <h2 class="anim anim-1"><span class="icon">🛡️</span>Section 5: Ethical Risk Mitigation</h2>
+                <h3 class="anim anim-2">Table 4: A Framework for Ethical Risk Assessment</h3>
+                <div class="table-wrapper anim anim-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ethical Domain</th>
+                                <th>Specific Risk in Educational Context</th>
+                                <th>Proposed Mitigation Strategy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Privacy</strong></td>
+                                <td>Unauthorized access to or misuse of sensitive student neural data (e.g., attention levels, emotional states).</td>
+                                <td><strong>Technical:</strong> On-device processing, data anonymization, robust encryption. <br><strong>Policy:</strong> Classify neural data as sensitive. Mandate clear, opt-in consent. Prohibit data sale. <br><strong>Pedagogical:</strong> Educate on "neurorights" and data literacy.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Security</strong></td>
+                                <td>Malicious hacking of BCI systems to manipulate student learning, steal data, or cause physical harm.</td>
+                                <td><strong>Technical:</strong> Robust authentication, access controls, regular security audits. <br><strong>Policy:</strong> Establish cybersecurity standards. Create clear liability frameworks. <br><strong>Pedagogical:</strong> Train users on secure practices.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cognitive Liberty</strong></td>
+                                <td>Coercion of students to maintain "optimal focus"; penalizing mental states like daydreaming.</td>
+                                <td><strong>Technical:</strong> User-overridable controls and a "manual off-switch." <br><strong>Policy:</strong> Prohibit use of passive BCI data for grading or discipline. Legislate the right to mental privacy. <br><strong>Pedagogical:</strong> Frame BCI as a tool for self-discovery, not a performance monitor.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Equity</strong></td>
+                                <td>Creation of a "neuro-divide" where only affluent students/schools can afford BCI-based learning enhancements.</td>
+                                <td><strong>Technical:</strong> Focus on low-cost, open-source hardware and software. <br><strong>Policy:</strong> Public funding/subsidies for assistive BCI technologies. Fund pilot programs in diverse schools. <br><strong>Pedagogical:</strong> Prioritize applications that support inclusive education.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Safety</strong></td>
+                                <td>Physical risks from hardware (e.g., skin irritation) or psychological risks from inaccurate feedback.</td>
+                                <td><strong>Technical:</strong> Adhere to rigorous medical device safety standards. <br><strong>Policy:</strong> Require independent safety certifications. Establish protocols for adverse events. <br><strong>Pedagogical:</strong> Ensure proper training for teachers and staff.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide-6">
+            <div class="slide-content">
+                <h2 class="anim anim-1"><span class="icon">💡</span>Section 6: A Blueprint for a Hybrid System</h2>
+                <p class="anim anim-2">Successful BCI-EdTech integration is not inevitable; it must be a matter of deliberate, responsible design. This is a blueprint for an ethical and effective system.</p>
+                
+                <h3 class="anim anim-3">Conceptual Architecture</h3>
+                <ul>
+                    <li class="anim anim-4"><strong>User-Centric Control:</strong> The student must have ultimate authority. This requires a "privacy-by-design" ethos, a user-controlled dashboard, and the clear ability to opt-out at any time without penalty.<sup>12</sup></li>
+                    <li class="anim anim-5"><strong>A Tiered Application Model:</strong>
+                        <ol>
+                            <li><strong>Tier 1 (Highest Priority):</strong> Foundational Assistive Technology for students with severe disabilities. This is ethically clear and empowering.</li>
+                            <li><strong>Tier 2 (Opt-in):</strong> Voluntary neurofeedback for cognitive skill enhancement (e.g., attention training). The student is in control.</li>
+                            <li><strong>Tier 3 (Highly Regulated):</strong> Passive monitoring for adaptive learning. This requires the strictest oversight, and data MUST be firewalled from all grading or assessment.</li>
+                        </ol>
+                    </li>
+                </ul>
+
+                <h3 class="anim anim-6">Recommendations for Stakeholders</h3>
+                <ul class="anim anim-6">
+                    <li><strong>For Researchers & Developers:</strong> Prioritize usability (signal quality, less calibration) and a "privacy-by-design" approach. Collaborate with educators and ethicists.<sup>11</sup></li>
+                    <li><strong>For Educators & Institutions:</strong> Approach with cautious optimism. Focus on professional development and run small, voluntary pilot programs. Prioritize inclusion.<sup>133</sup></li>
+                    <li><strong>For Policymakers & Regulators:</strong> Develop clear legal protections for "neural data." Fund independent, longitudinal research on the long-term impacts on child development.<sup>129, 133</sup></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="slide" id="slide-6-conclusion">
+            <div class="slide-content" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                <h2 class="anim anim-1" style="border: none; text-align: center;">Concluding Vision: Toward a Symbiotic Future</h2>
+                <p class="anim anim-2" style="font-size: 1.3rem; font-weight: 300;">The technology is agnostic. Its impact will be determined by the <strong>values we embed</strong> in its design and the rules governing its use.</p>
+                
+                <p class="anim anim-3" style="font-size: 1.3rem; font-weight: 300;">The path forward is a dual carriageway: one lane for <strong>technological innovation</strong>, the other for <strong>ethical foresight</strong>.</p>
+                
+                <p class="anim anim-4" style="font-size: 1.5rem; font-weight: 600; color: var(--heading-color); margin-top: 2rem;">
+                    The vision for a neuro-educational symbiosis should not be a system that aims to read minds...
+                    <br><br>
+                    ...it should be a system that <strong>empowers minds.</strong>
+                </p>
+
+                <p class="anim anim-5" style="margin-top: 2rem; font-size: 1.1rem;">The ultimate goal is not to interface with the brain for the sake of the machine, but to use the machine to help each unique brain achieve its fullest potential. The decisions made today will determine which of these futures we build.</p>
+            </div>
+        </section>
+
+    </div> <nav class="slide-nav">
+        <button id="prev-slide" title="Previous Slide">◀</button>
+        <span id="slide-counter">1 / 12</span>
+        <button id="next-slide" title="Next Slide">▶</button>
+    </nav>
+
 
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
+        document.addEventListener('DOMContentLoaded', () => {
             
             // --- Theme Toggle Logic ---
             const themeToggle = document.getElementById('theme-toggle');
             const body = document.body;
-
-            // Check for saved theme in localStorage
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme) {
                 if (savedTheme === 'dark') {
@@ -810,8 +1171,6 @@
                     themeToggle.checked = true;
                 }
             }
-
-            // Toggle theme on switch change
             themeToggle.addEventListener('change', () => {
                 if (themeToggle.checked) {
                     body.classList.add('dark-mode');
@@ -822,28 +1181,105 @@
                 }
             });
 
-            // --- Scroll Animation Logic ---
-            const sections = document.querySelectorAll('.fade-in');
+            // --- Slide Navigation Logic ---
+            const presentationContainer = document.getElementById('presentation-container');
+            const slides = document.querySelectorAll('.slide');
+            const prevButton = document.getElementById('prev-slide');
+            const nextButton = document.getElementById('next-slide');
+            const slideCounter = document.getElementById('slide-counter');
+            const totalSlides = slides.length;
+            let currentSlide = 0;
 
-            const observerOptions = {
-                root: null, // observes intersections relative to the viewport
-                rootMargin: '0px',
-                threshold: 0.1 // 10% of the element must be visible
-            };
+            function updateSlideCounter() {
+                slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+            }
 
-            const observerCallback = (entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target); // Stop observing once it's visible
+            function showSlide(index) {
+                // Use transform to move the entire container up/down
+                presentationContainer.style.transform = `translateY(-${index * 100}vh)`;
+
+                // Update active class for animations
+                slides.forEach((slide, i) => {
+                    if (i === index) {
+                        slide.classList.add('active');
+                    } else {
+                        slide.classList.remove('active');
                     }
                 });
-            };
 
-            const scrollObserver = new IntersectionObserver(observerCallback, observerOptions);
+                // Update button states
+                prevButton.disabled = (index === 0);
+                nextButton.disabled = (index === totalSlides - 1);
 
-            sections.forEach(section => {
-                scrollObserver.observe(section);
+                updateSlideCounter();
+            }
+
+            nextButton.addEventListener('click', () => {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    showSlide(currentSlide);
+                }
+            });
+
+            prevButton.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    showSlide(currentSlide);
+                }
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+                    nextButton.click();
+                } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                    prevButton.click();
+                }
+            });
+
+            // Initialize first slide
+            showSlide(0);
+
+            // --- Flip Card Logic (for touch devices) ---
+            const flipCards = document.querySelectorAll('.flip-card');
+            flipCards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Prevent card from flipping back if clicking on a link inside
+                    if (e.target.tagName.toLowerCase() !== 'a') {
+                        card.classList.toggle('is-flipped');
+                    }
+                });
+            });
+
+            // --- Tabbed Interface Logic ---
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Get the target tab from data-tab attribute
+                    const targetTab = button.getAttribute('data-tab');
+
+                    // Deactivate all buttons and content
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Activate the clicked button
+                    button.classList.add('active');
+                    
+                    // Activate the corresponding content
+                    document.getElementById(`tab-${targetTab}`).classList.add('active');
+                });
+            });
+
+            // --- Accordion Card Logic ---
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const accordionCard = header.parentElement;
+                    accordionCard.classList.toggle('active');
+                });
             });
 
         });
